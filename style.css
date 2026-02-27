@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e7efe9">
+  <meta name="color-scheme" content="light">
+
+  <!-- Brand basics -->
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="site.webmanifest">
+  <meta property="og:site_name" content="The Wellness Hub Dublin">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Timetable — The Wellness Hub Dublin">
+  <meta property="og:description" content="A calm studio for post‑menopause strength, Pilates and nutrition in Dublin.">
+
+  <title>Timetable — The Wellness Hub Dublin</title>
+
+  <!-- Calm-mode class as early as possible (reduces visual "snap") -->
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem('wh_calm_mode');
+        var on = pref === null ? '1' : pref;
+        if (on === '1') document.documentElement.classList.add('calm-mode');
+        var reduce = localStorage.getItem('wh_reduce_motion');
+        if (reduce === '1') document.documentElement.classList.add('reduce-motion');
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Jost:wght@200;300;400;500;600&family=Cormorant:ital,wght@0,300;0,400;1,300;1,400;1,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./css/style.css">
+<style>
+  /* Fallback safety net if main CSS fails to load */
+  .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+  .skip-link:focus{left:12px;top:12px;width:auto;height:auto;padding:10px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.15);background:#fff;color:#111;z-index:9999;}
+  .nav-logo-mark svg{width:20px;height:20px;display:block;}
+  .footer-mark svg{width:24px;height:24px;display:block;}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- Left in DOM for other pages that still use them; calm-mode hides them -->
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+<div class="progress-bar"></div>
+<div class="page-loader"><div class="loader-wordmark">Timetable</div><div class="loader-line"></div></div>
+
+<nav>
+  <a href="index.html" class="nav-logo" aria-label="The Wellness Hub Dublin">
+    <span class="nav-logo-mark" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" width="20" height="20">
+        <circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="2"/>
+        <circle cx="32" cy="23" r="10.5" stroke="currentColor" stroke-width="2"/>
+        <circle cx="23" cy="39" r="10.5" stroke="currentColor" stroke-width="2"/>
+        <circle cx="41" cy="39" r="10.5" stroke="currentColor" stroke-width="2"/>
+        <path d="M32 50c0-3 0-6 0-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="nav-logo-text">
+      <span class="nav-logo-primary">The Wellness Hub</span>
+      <span class="nav-logo-secondary">Dublin · Strength • Pilates • Nutrition</span>
+    </span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="why.html">Our Story</a></li>
+    <li><a href="classes.html">Classes</a></li>
+    <li><a href="howto.html">Guides</a></li>
+    <li><a href="timetable.html" class="active">Timetable</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="bookings.html">My Bookings</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+
+  <a href="https://legitfit.com/" class="nav-book-btn" data-booking-url>Book</a>
+  <button class="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</nav>
+
+<main id="main">
+  <div class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="container">
+      <div class="eyebrow reveal">Take a breath</div>
+      <h1 class="display-xl reveal reveal-d1">A calm week of<br><em>movement</em></h1>
+      <p class="page-hero-sub reveal reveal-d2">Quiet studio. Small groups. No pressure. Come as you are, leave feeling lighter.</p>
+
+      <div class="calm-controls" aria-label="Comfort controls">
+        <button type="button" class="calm-chip" id="calmToggle" aria-pressed="true">
+          <span class="calm-switch" aria-hidden="true"></span>
+          <strong>Calm mode</strong>
+          <span id="calmState">On</span>
+        </button>
+        <button type="button" class="calm-chip" id="motionToggle" aria-pressed="false">
+          <span class="calm-switch" aria-hidden="true"></span>
+          <strong>Reduce motion</strong>
+          <span id="motionState">Off</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="timetable-section">
+    <div class="container">
+      <div class="timetable-header reveal">
+        <div>
+          <div class="eyebrow left-only">This week in Donaghmede</div>
+          <h2 class="display-md" style="margin-top:0.5rem">Choose your <em>pace</em></h2>
+        </div>
+        <div>
+          <div class="filter-row">
+            <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="strength">Strength</button>
+            <button class="filter-pill" data-filter="pilates">Pilates</button>
+            <button class="filter-pill" data-filter="mobility">Mobility</button>
+            
+          </div>
+          <p class="body-sm" style="margin:10px 0 0;color:var(--text-faint)">Live availability + payment are handled in LegitFit.</p>
+          <p class="body-sm" style="margin:8px 0 0;color:var(--text-faint)"><strong>Hyrox</strong> is seasonal (twice per year). During active blocks, sessions appear in LegitFit.</p>
+        </div>
+      </div>
+
+      <!-- Monday -->
+
+      <div class="day-group reveal">
+        <div class="day-label">Monday</div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">6:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">7:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">9:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">10:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Small Group PT</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">PT</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">6:00</div><div class="event-period">PM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Small Group PT</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">PT</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">7:00</div><div class="event-period">PM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="day-group reveal">
+        <div class="day-label">Tuesday</div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">6:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">9:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Small Group PT</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">PT</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Hyrox (seasonal block)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag nutrition">Hyrox</span><span class="etag">Seasonal</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">5:30</div><div class="event-period">PM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">6:30</div><div class="event-period">PM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Small Group PT</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">PT</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div><div class="event-period">PM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Hyrox (seasonal block)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag nutrition">Hyrox</span><span class="etag">Seasonal</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="day-group reveal">
+        <div class="day-label">Wednesday</div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">6:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">7:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">9:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">10:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Small Group PT</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">PT</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">6:30</div><div class="event-period">PM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Small Group PT</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">PT</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">7:00</div><div class="event-period">PM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="day-group reveal">
+        <div class="day-label">Thursday</div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">6:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">9:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Small Group PT</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">PT</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Hyrox (seasonal block)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag nutrition">Hyrox</span><span class="etag">Seasonal</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">5:30</div><div class="event-period">PM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">6:30</div><div class="event-period">PM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Small Group PT</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">PT</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div><div class="event-period">PM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Hyrox (seasonal block)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag nutrition">Hyrox</span><span class="etag">Seasonal</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="day-group reveal">
+        <div class="day-label">Friday</div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">6:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">7:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL (Ladies That Lift)</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">9:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL + Small Group PT</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL + PT</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="day-group reveal">
+        <div class="day-label">Saturday</div>
+
+        <div class="event-row" data-type="strength">
+          <div class="event-time-col"><div class="event-hour">7:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">LTL + Small Group PT</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL + PT</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="mobility">
+          <div class="event-time-col"><div class="event-hour">9:00</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Mobility</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Kelley</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag nutrition">Mobility</span><span class="etag">Joints</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="pilates">
+          <div class="event-time-col"><div class="event-hour">10:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Pilates</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Sara</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag pilates">Pilates</span><span class="etag">Weekend</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="day-group reveal">
+        <div class="day-label">Sunday</div>
+
+        <div class="event-row" data-type="pilates">
+          <div class="event-time-col"><div class="event-hour">9:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Pilates</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Sara</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag pilates">Pilates</span><span class="etag">Weekend</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+
+        <div class="event-row" data-type="pilates">
+          <div class="event-time-col"><div class="event-hour">10:30</div><div class="event-period">AM</div></div>
+          <div class="event-info-col">
+            <div class="event-name">Pilates</div>
+            <div class="event-meta">
+              <span class="event-meta-item">Coach Sara</span>
+              <span class="event-meta-item">Donaghmede</span>
+            </div>
+            <div class="event-tags-inline"><span class="etag pilates">Pilates</span><span class="etag">Weekend</span></div>
+          </div>
+          <div class="event-action-col">
+            <span class="spots-label">Book via LegitFit</span>
+            <button class="btn-sm" data-booking="external">Book</button>
+          </div>
+        </div>
+      </div>
+
+<div class="hint-box reveal">
+        <div class="hint-title">A quiet studio policy</div>
+        <div class="hint-sub">Keep your phone on silent. Arrive 5–10 minutes early. No mirrors, no judgement, no "push through" language. If you need a pause, take it.</div>
+      </div>
+
+      <div class="hint-box reveal" style="margin-top:14px">
+        <div class="hint-title">Cancellation policy</div>
+        <div class="hint-sub">Cancel 12+ hours before class so someone else can take the spot. Email kelley@thewellnesshub.ie or call us. (Replace this with your exact policy.)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Modal -->
+  <div class="modal-overlay" id="bookingOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Class Name</div>
+          <div class="modal-sub">Date · Time</div>
+        </div>
+        <button class="modal-close" type="button" onclick="closeModal()" aria-label="Close booking">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="bookingForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input class="form-input" type="text" name="firstName" autocomplete="given-name" placeholder="Mary" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input class="form-input" type="text" name="lastName" autocomplete="family-name" placeholder="Murphy" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" name="email" autocomplete="email" placeholder="mary@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone (Optional)</label>
+            <input class="form-input" type="tel" name="phone" autocomplete="tel" placeholder="+353 87 123 4567">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Membership</label>
+            <select class="form-select" name="membership">
+              <option>Membership (€80/mo — 2 classes/week)</option>
+              <option>Pilates course (4 weeks)</option>
+              <option>Drop-in (€12)</option>
+              
+            <option>Free Intro Class</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Health Notes</label>
+            <textarea class="form-textarea" rows="2" name="notes" placeholder="Anything you'd like us to know (injuries, joint issues, recent surgery)…"></textarea>
+          </div>
+          <button type="submit" class="btn btn-dark" style="width:100%;justify-content:center;margin-top:0.5rem">Confirm Reservation</button>
+          <p style="font-size:0.68rem;color:rgba(26,22,18,0.58);text-align:center;margin-top:1rem;letter-spacing:0.04em">Saved locally on this device. Manage it in “My Bookings”.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-main">
+      <div>
+        <div class="footer-brand-lockup">
+          <span aria-hidden="true" class="footer-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" width="24" height="24"><circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="23" r="10.5" stroke="currentColor" stroke-width="2"/><circle cx="23" cy="39" r="10.5" stroke="currentColor" stroke-width="2"/><circle cx="41" cy="39" r="10.5" stroke="currentColor" stroke-width="2"/><path d="M32 50c0-3 0-6 0-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          <div>
+            <div class="footer-brand-name">The Wellness Hub</div>
+            <div class="footer-brand-tagline">Dublin · Strength • Pilates • Nutrition</div>
+          </div>
+        </div>
+        <p class="footer-brand-desc">A calm studio for women post‑menopause. Strength that supports your bones. Pilates that eases your joints. Nutrition 1:1 that fits real life.</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/kelleythewellnesshub/?hl=en" class="social-icon" aria-label="Instagram" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm10 2H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm-5 4a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.25-2.25a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/></svg></a>
+</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Classes</div>
+        <ul class="footer-links">
+          <li><a href="classes.html#weights">Strength</a></li>
+          <li><a href="classes.html#pilates">Pilates</a></li>
+          <li><a href="classes.html#nutrition">Nutrition</a></li>
+          <li><a href="timetable.html">Timetable</a></li>
+          <li><a href="classes.html">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Learn</div>
+        <ul class="footer-links">
+          <li><a href="howto.html">Guides</a></li>
+          <li><a href="why.html">Our approach</a></li>
+          <li><a href="team.html">Team</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Connect</div>
+        <ul class="footer-links">
+          <li><a href="mailto:kelley@thewellnesshub.ie">kelley@thewellnesshub.ie</a></li>
+          <li><a href="tel:+353862106867">086 210 6867</a></li>
+          <li><a href="contact.html">Donaghmede, Dublin 13 (D13TX67)</a></li>
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a href="terms.html">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 The Wellness Hub Dublin. All rights reserved.</span>
+      <span>Designed as a local demo site.</span>
+    </div>
+  </div>
+</footer>
+
+<button class="btt">↑</button>
+
+<script>
+  // Calm controls (portable)
+  (function () {
+    function setPressed(btn, on) {
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+
+    var calmToggle = document.getElementById('calmToggle');
+    var calmState = document.getElementById('calmState');
+    var motionToggle = document.getElementById('motionToggle');
+    var motionState = document.getElementById('motionState');
+
+    function applyFromStorage() {
+      try {
+        var calmOn = localStorage.getItem('wh_calm_mode');
+        calmOn = calmOn === null ? '1' : calmOn;
+        document.documentElement.classList.toggle('calm-mode', calmOn === '1');
+        if (calmState) calmState.textContent = calmOn === '1' ? 'On' : 'Off';
+        if (calmToggle) setPressed(calmToggle, calmOn === '1');
+
+        var reduce = localStorage.getItem('wh_reduce_motion') || '0';
+        document.documentElement.classList.toggle('reduce-motion', reduce === '1');
+        if (motionState) motionState.textContent = reduce === '1' ? 'On' : 'Off';
+        if (motionToggle) setPressed(motionToggle, reduce === '1');
+      } catch (e) {}
+    }
+
+    applyFromStorage();
+
+    calmToggle && calmToggle.addEventListener('click', function () {
+      try {
+        var on = document.documentElement.classList.contains('calm-mode');
+        localStorage.setItem('wh_calm_mode', on ? '0' : '1');
+      } catch (e) {}
+      applyFromStorage();
+    });
+
+    motionToggle && motionToggle.addEventListener('click', function () {
+      try {
+        var on = document.documentElement.classList.contains('reduce-motion');
+        localStorage.setItem('wh_reduce_motion', on ? '0' : '1');
+      } catch (e) {}
+      applyFromStorage();
+    });
+  })();
+</script>
+
+<script src="./js/config.js"></script>
+<script src="./js/main.js"></script>
+</body>
+</html>

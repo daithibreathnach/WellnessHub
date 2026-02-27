@@ -1,0 +1,18 @@
+// Site config for The Wellness Hub (edit this first)
+// This file is safe to change without touching HTML/CSS.
+//
+// If you use LegitFit for bookings + payments, paste your studio booking URL below.
+// Example might look like: https://legitfit.com/<your-studio>  (get the exact link from your LegitFit account)
+window.WH_CONFIG = {
+  bookingUrl: "https://legitfit.com/authenticate/signup/theconcept",
+  instagramUrl: "https://www.instagram.com/kelleythewellnesshub/?hl=en",
+  email: "kelley@thewellnesshub.ie",
+  phoneDisplay: "086 210 6867",
+  phoneTel: "+353862106867",
+  addressShort: "Donaghmede, Dublin 13 (D13TX67)",
+  addressFullLines: [
+    "123a Carndonagh Park",
+    "Donaghmede, Dublin 13",
+    "D13TX67"
+  ]
+};

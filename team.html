@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e7efe9">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="site.webmanifest">
+  <meta property="og:site_name" content="The Wellness Hub Dublin">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Wellness Hub — Dublin · Women's Health After Menopause">
+  <meta property="og:description" content="Dublin's dedicated wellness centre for women navigating post-menopause. Strength training, weekend Pilates, and nutrition 1:1 consultations in a supportive community.">
+
+  <title>The Wellness Hub — Dublin · Women's Health After Menopause</title>
+  <meta name="description" content="Dublin's dedicated wellness centre for women navigating post-menopause. Strength training, weekend Pilates, and nutrition 1:1 consultations in a supportive community.">  
+
+  <!-- Calm-mode class as early as possible (reduces visual "snap") -->
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem('wh_calm_mode');
+        var on = pref === null ? '1' : pref;
+        if (on === '1') document.documentElement.classList.add('calm-mode');
+        var reduce = localStorage.getItem('wh_reduce_motion');
+        if (reduce === '1') document.documentElement.classList.add('reduce-motion');
+      } catch (e) {}
+    })();
+  </script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Jost:wght@200;300;400;500;600&family=Cormorant:ital,wght@0,300;0,400;1,300;1,400;1,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./css/style.css">
+<style>
+  /* Fallback safety net if main CSS fails to load */
+  .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+  .skip-link:focus{left:12px;top:12px;width:auto;height:auto;padding:10px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.15);background:#fff;color:#111;z-index:9999;}
+  .nav-logo-mark svg{width:20px;height:20px;display:block;}
+  .footer-mark svg{width:24px;height:24px;display:block;}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- Custom Cursor -->
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+<!-- Progress Bar -->
+<div class="progress-bar"></div>
+
+<!-- Page Loader -->
+<div class="page-loader">
+  <div class="loader-wordmark">The Wellness Hub</div>
+  <div class="loader-line"></div>
+</div>
+
+<!-- Navigation -->
+<nav>
+  <a href="index.html" class="nav-logo" aria-label="The Wellness Hub Dublin">
+    <span class="nav-logo-mark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" width="20" height="20"><circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="23" r="10.5" stroke="currentColor" stroke-width="2"/><circle cx="23" cy="39" r="10.5" stroke="currentColor" stroke-width="2"/><circle cx="41" cy="39" r="10.5" stroke="currentColor" stroke-width="2"/><path d="M32 50c0-3 0-6 0-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+    <span class="nav-logo-text">
+      <span class="nav-logo-primary">The Wellness Hub</span>
+      <span class="nav-logo-secondary">Dublin · Strength • Pilates • Nutrition</span>
+    </span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="why.html">Our Story</a></li>
+    <li><a href="classes.html">Classes</a></li>
+    <li><a href="howto.html">Guides</a></li>
+    <li><a href="timetable.html">Timetable</a></li>
+    <li><a href="team.html">Team</a></li>
+      <li><a href="bookings.html">My Bookings</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="https://legitfit.com/" class="nav-book-btn" data-booking-url>Book</a>
+  <button class="hamburger" aria-label="Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<main id="main"><!-- ── HERO ─────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="eyebrow left-only">Donaghmede, Dublin 13</div>
+      <h1 class="hero-headline">
+        A calm place to<br>
+        <em>get strong</em><br>
+        after menopause
+      </h1>
+      <p class="hero-subtext">
+        Light strength training, weekend Pilates, and nutrition 1:1 consultations. Small groups. Quiet coaching. No pressure. Just steady progress and a quieter mind.
+      </p>
+      <div class="hero-actions">
+        <a href="timetable.html" class="btn btn-gold btn-arrow">View timetable</a>
+        <a href="why.html" class="btn btn-ghost-light">Our story</a>
+      </div>
+
+      <div class="calm-controls" aria-label="Comfort controls">
+        <button type="button" class="calm-chip" id="calmToggle" aria-pressed="true">
+          <span class="calm-switch" aria-hidden="true"></span>
+          <strong>Calm mode</strong>
+          <span id="calmState">On</span>
+        </button>
+        <button type="button" class="calm-chip" id="motionToggle" aria-pressed="false">
+          <span class="calm-switch" aria-hidden="true"></span>
+          <strong>Reduce motion</strong>
+          <span id="motionState">Off</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="glass-card reveal reveal-d1">
+        <div class="glass-card-label">Next session</div>
+        <div class="glass-card-title">LTL (Ladies That Lift)</div>
+        <div class="glass-card-sub">See availability in LegitFit</div>
+        <div class="glass-card-tags">
+          <span class="glass-tag">Small group</span>
+          <span class="glass-tag">Coach Kelley</span>
+        </div>
+      </div>
+
+      <div class="glass-card reveal reveal-d2">
+        <div class="glass-card-label">A quiet studio</div>
+        <div class="glass-card-title">No pressure. No mirrors. No diet talk.</div>
+        <div class="glass-card-sub">Take breaks whenever you need. We’ll meet you where you are.</div>
+        <div class="glass-card-tags">
+          <span class="glass-tag">Strength</span>
+          <span class="glass-tag">Pilates</span>
+          <span class="glass-tag">Nutrition 1:1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="hero-stat">
+      <div class="hero-stat-num" data-count="12" data-suffix="+">0+</div>
+      <div class="hero-stat-label">Max group<br>size</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" data-count="3" data-suffix="">0</div>
+      <div class="hero-stat-label">Pillars<br>of care</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" data-count="7" data-suffix=" yrs">0 yrs</div>
+      <div class="hero-stat-label">Serving<br>Dublin women</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── INTRO ─────────────────────────────────────────────────── -->
+<section class="intro-section">
+  <div class="container">
+    <div class="intro-grid">
+      <div class="reveal">
+        <div class="eyebrow left-only">The Wellness Hub difference</div>
+        <h2 class="display-lg">Built for<br>this season<br><em>of your life</em></h2>
+        <p class="intro-signature">— Kelley Connor, Founder</p>
+      </div>
+      <div class="reveal reveal-d1">
+        <blockquote>
+          Most gyms weren't designed with us in mind. Generic programmes, crowded spaces, and instructors who don't quite get it.
+        </blockquote>
+        <p class="body-lg" style="margin-bottom:1.5rem">
+          The Wellness Hub was born from one conviction — that women in their 50s, 60s, and beyond deserve a space built <em>specifically</em> for them. Evidence-based. Encouraging. And genuinely effective.
+        </p>
+        <p class="body-sm" style="margin-bottom:2rem">
+          Everything we do is shaped by the real physiology of post-menopause: changing bone density, hormonal shifts, energy patterns, and the desire to feel like yourself again.
+        </p>
+        <a href="why.html" class="btn btn-ghost btn-arrow">Read our full story</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES ──────────────────────────────────────────────── -->
+<section class="services-section">
+  <div class="container">
+    <div class="services-header">
+      <div class="reveal">
+        <div class="eyebrow left-only">What we offer</div>
+        <h2 class="display-lg">Three pillars<br><em>of wellbeing</em></h2>
+      </div>
+      <div class="reveal reveal-d1">
+        <p class="body-sm">All programmes designed specifically for post-menopausal women. All levels welcome. Small groups, specialist instructors, no generic approaches.</p>
+        <a href="classes.html" class="btn btn-ghost btn-arrow" style="margin-top:1.5rem">View all classes</a>
+      </div>
+    </div>
+
+    <div class="services-grid">
+      <a href="classes.html#weights" class="service-card reveal">
+        <div class="service-num">01</div>
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M3 10h3v4H3v-4Zm15 0h3v4h-3v-4ZM6 12h12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M8 9v8M16 9v8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="service-title">Light Strength<br>Training</h3>
+        <p class="service-desc">Resistance training specifically adapted for post-menopausal bodies. Build strength, protect bone density, improve balance. We start light and progress smart.</p>
+        <div class="service-link">Explore <span>→</span></div>
+      </a>
+
+      <a href="classes.html#pilates" class="service-card reveal reveal-d1">
+        <div class="service-num">02</div>
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M7 7c2 0 3.5 1.5 3.5 3.5S9 14 7 14s-3.5-1.5-3.5-3.5S5 7 7 7Z" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M17 10c2.4 0 4 1.6 4 4s-1.6 4-4 4-4-1.6-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M10.5 10.5c1.1-1.8 3.1-3 5.4-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="service-title">Pilates</h3>
+        <p class="service-desc">Not the Instagram version. Restorative mat and reformer pilates that rebuilds core strength, eases joint pain, and addresses the pelvic floor — the conversation nobody else has.</p>
+        <div class="service-link">Explore <span>→</span></div>
+      </a>
+
+      <a href="classes.html#nutrition" class="service-card reveal reveal-d2">
+        <div class="service-num">03</div>
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M20 4c-6.5 0-10.5 4-12 9.5C7 18 9.7 20 13 20c5.5-1.5 7.5-5.5 7-16Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M8 13.5c2.8.2 6.3-1.6 8.5-3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="service-title">Nutrition<br>1:1</h3>
+        <p class="service-desc">Private nutrition consultations focused on protein, bone health, energy and habits. Practical, calm, and built around real life. No diet culture.</p>
+        <div class="service-link">Explore <span>→</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHY SECTION ────────────────────────────────────────────── -->
+<section class="why-section">
+  <div class="container">
+    <div class="why-grid">
+      <div>
+        <div class="eyebrow left-only reveal">Why we exist</div>
+        <h2 class="display-lg reveal reveal-d1">Our<br><em>commitments</em><br>to you</h2>
+        <p class="why-body reveal reveal-d2">
+          <strong>Evidence-based, always.</strong> Every class, every recommendation grounded in current research. We update our methods when the science updates.<br><br>
+          <strong>Dignity and respect, non-negotiable.</strong> No before-and-after culture. No weight-loss obsession. You come here to feel well — not to be fixed.<br><br>
+          <strong>The whole picture.</strong> Sleep, stress and mood matter. We coach for consistency, not intensity.
+        </p>
+        <div class="reveal reveal-d3">
+          <a href="why.html" class="btn btn-ghost-light btn-arrow">Full story</a>
+        </div>
+      </div>
+
+      <div class="why-pillars reveal reveal-d1">
+        <div class="pillar">
+          <div class="pillar-num">1</div>
+          <div class="pillar-content">
+            <h4>Strength That Protects You</h4>
+            <p>Light resistance training slows bone loss, improves balance, boosts metabolism. We make it safe, progressive, and genuinely enjoyable.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">2</div>
+          <div class="pillar-content">
+            <h4>Pilates for Your Body Now</h4>
+            <p>Restorative, joint-friendly pilates designed around real bodies at real ages — not idealised ones. Pelvic floor. Core. Breath.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">3</div>
+          <div class="pillar-content">
+            <h4>Nutrition 1:1 That Works</h4>
+            <p>Private consultations focused on protein, bone health, energy and habits. Practical, calm and sustainable.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TIMETABLE PREVIEW ──────────────────────────────────────── -->
+<section class="timetable-section">
+  <div class="container">
+    <div class="timetable-header">
+      <div class="reveal">
+        <div class="eyebrow left-only">This week</div>
+        <h2 class="display-lg">Upcoming<br><em>sessions</em></h2>
+      </div>
+      <div class="reveal reveal-d1">
+        <p class="body-sm" style="max-width:56ch;margin:0 0 1rem;color:var(--text-soft)">
+          Booking + payment is handled through LegitFit.
+          <a href="https://legitfit.com/" data-booking-url target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Open booking</a>.
+        </p>
+        <div class="filter-row">
+          <button class="filter-pill active" data-filter="all">All</button>
+          <button class="filter-pill" data-filter="strength">Strength</button>
+          <button class="filter-pill" data-filter="pilates">Pilates</button>
+          <button class="filter-pill" data-filter="mobility">Mobility</button>
+          
+        </div>
+        <a href="timetable.html" style="display:block;margin-top:1rem;font-size:0.72rem;letter-spacing:0.1em;color:var(--text-faint)">View full timetable →</a>
+      </div>
+    </div>
+
+    <div class="day-group">
+      <div class="day-label">Monday</div>
+
+      <div class="event-row reveal" data-type="strength">
+        <div class="event-time-col"><div class="event-hour">6:30</div><div class="event-period">AM</div></div>
+        <div class="event-info-col">
+          <div class="event-name">LTL (Ladies That Lift)</div>
+          <div class="event-meta"><span class="event-meta-item">Coach Kelley</span><span class="event-meta-item">Donaghmede</span></div>
+          <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">LTL</span></div>
+        </div>
+        <div class="event-action-col">
+          <span class="spots-label">Book via LegitFit</span>
+          <button class="btn-sm" data-booking="external">Book</button>
+        </div>
+      </div>
+
+      <div class="event-row reveal reveal-d1" data-type="strength">
+        <div class="event-time-col"><div class="event-hour">10:30</div><div class="event-period">AM</div></div>
+        <div class="event-info-col">
+          <div class="event-name">Small Group PT</div>
+          <div class="event-meta"><span class="event-meta-item">Coach Kelley</span><span class="event-meta-item">Donaghmede</span></div>
+          <div class="event-tags-inline"><span class="etag weights">Strength</span><span class="etag">PT</span></div>
+        </div>
+        <div class="event-action-col">
+          <span class="spots-label">Book via LegitFit</span>
+          <button class="btn-sm" data-booking="external">Book</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-group" style="margin-top:1.5rem">
+      <div class="day-label">Saturday</div>
+
+      <div class="event-row reveal" data-type="mobility">
+        <div class="event-time-col"><div class="event-hour">9:00</div><div class="event-period">AM</div></div>
+        <div class="event-info-col">
+          <div class="event-name">Mobility</div>
+          <div class="event-meta"><span class="event-meta-item">Coach Kelley</span><span class="event-meta-item">Donaghmede</span></div>
+          <div class="event-tags-inline"><span class="etag nutrition">Mobility</span><span class="etag">Joints</span></div>
+        </div>
+        <div class="event-action-col">
+          <span class="spots-label">Book via LegitFit</span>
+          <button class="btn-sm" data-booking="external">Book</button>
+        </div>
+      </div>
+
+      <div class="event-row reveal reveal-d1" data-type="pilates">
+        <div class="event-time-col"><div class="event-hour">10:30</div><div class="event-period">AM</div></div>
+        <div class="event-info-col">
+          <div class="event-name">Pilates</div>
+          <div class="event-meta"><span class="event-meta-item">Coach Sara</span><span class="event-meta-item">Donaghmede</span></div>
+          <div class="event-tags-inline"><span class="etag pilates">Pilates</span><span class="etag">Weekend</span></div>
+        </div>
+        <div class="event-action-col">
+          <span class="spots-label">Book via LegitFit</span>
+          <button class="btn-sm" data-booking="external">Book</button>
+        </div>
+      </div>
+    </div>
+
+        <div class="day-group" style="margin-top:1.5rem">
+      <div class="day-label">Sunday</div>
+
+      <div class="event-row reveal" data-type="pilates">
+        <div class="event-time-col"><div class="event-hour">9:30</div><div class="event-period">AM</div></div>
+        <div class="event-info-col">
+          <div class="event-name">Pilates</div>
+          <div class="event-meta"><span class="event-meta-item">Coach Sara</span><span class="event-meta-item">Donaghmede</span></div>
+          <div class="event-tags-inline"><span class="etag pilates">Pilates</span><span class="etag">Weekend</span></div>
+        </div>
+        <div class="event-action-col">
+          <span class="spots-label">Book via LegitFit</span>
+          <button class="btn-sm" data-booking="external">Book</button>
+        </div>
+      </div>
+
+      <div class="event-row reveal reveal-d1" data-type="pilates">
+        <div class="event-time-col"><div class="event-hour">10:30</div><div class="event-period">AM</div></div>
+        <div class="event-info-col">
+          <div class="event-name">Pilates</div>
+          <div class="event-meta"><span class="event-meta-item">Coach Sara</span><span class="event-meta-item">Donaghmede</span></div>
+          <div class="event-tags-inline"><span class="etag pilates">Pilates</span><span class="etag">Weekend</span></div>
+        </div>
+        <div class="event-action-col">
+          <span class="spots-label">Book via LegitFit</span>
+          <button class="btn-sm" data-booking="external">Book</button>
+        </div>
+      </div>
+    </div>
+
+<div style="text-align:center;margin-top:3rem">
+      <a href="timetable.html" class="btn btn-dark btn-arrow">Full weekly timetable</a>
+    </div>
+  </div>
+</section>
+<!-- ── TESTIMONIALS ──────────────────────────────────────────── -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="eyebrow reveal">Member voices</div>
+    <h2 class="display-lg reveal reveal-d1" style="color:var(--cream);margin-top:1rem">Real women,<br><em style="color:var(--mist)">real results</em></h2>
+
+    <div class="testimonials-track">
+      <div class="testimonial-card reveal">
+        <div class="tcard-stars">
+          <div class="star"></div><div class="star"></div><div class="star"></div>
+          <div class="star"></div><div class="star"></div>
+        </div>
+        <p class="tcard-text">I walked in nervous about the weights. Twelve weeks later I feel steadier and stronger — stairs are easier, posture is better, and I’m sleeping more consistently.</p>
+        <div class="tcard-author">
+          <div class="tcard-name">Member</div>
+          <div class="tcard-detail">Donaghmede, Dublin 13</div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-d1">
+        <div class="tcard-stars">
+          <div class="star"></div><div class="star"></div><div class="star"></div>
+          <div class="star"></div><div class="star"></div>
+        </div>
+        <p class="tcard-text">The Pilates here is nothing like what I’d tried before. Quiet, focused, and Sara cues in a way that makes you feel safe and capable. I leave feeling calmer every time.</p>
+        <div class="tcard-author">
+          <div class="tcard-name">Member</div>
+          <div class="tcard-detail">Donaghmede, Dublin 13</div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-d2">
+        <div class="tcard-stars">
+          <div class="star"></div><div class="star"></div><div class="star"></div>
+          <div class="star"></div><div class="star"></div>
+        </div>
+        <p class="tcard-text">The nutrition 1:1 consult made food feel simple again. No diet talk. Just what to add — protein, fibre, and a plan that fits real life.</p>
+        <div class="tcard-author">
+          <div class="tcard-name">Member</div>
+          <div class="tcard-detail">Donaghmede, Dublin 13</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── NEWSLETTER ─────────────────────────────────────────────── -->
+<section class="newsletter-section">
+  <div class="container">
+    <div class="newsletter-inner">
+      <div class="eyebrow reveal" style="justify-content:center">Stay connected</div>
+      <h2 class="display-lg reveal reveal-d1" style="color:var(--cream)">Thursday<br><em>newsletter</em></h2>
+      <p class="body-sm reveal reveal-d2" style="color:rgba(248,244,238,0.4);margin-top:1rem;margin-bottom:2.5rem">Tips, recipes, movement guides, and member stories — every Thursday morning. No noise, just the useful stuff.</p>
+      <form class="newsletter-form reveal reveal-d3" id="newsletterForm">
+        <input class="newsletter-input" type="email" placeholder="Your email address" required>
+        <button type="submit" class="btn btn-gold">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-main">
+      <div>
+        <div class="footer-brand-lockup">
+          <span aria-hidden="true" class="footer-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" width="24" height="24"><circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="23" r="10.5" stroke="currentColor" stroke-width="2"/><circle cx="23" cy="39" r="10.5" stroke="currentColor" stroke-width="2"/><circle cx="41" cy="39" r="10.5" stroke="currentColor" stroke-width="2"/><path d="M32 50c0-3 0-6 0-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          <div>
+            <div class="footer-brand-name">The Wellness Hub</div>
+            <div class="footer-brand-tagline">Dublin · Strength • Pilates • Nutrition</div>
+          </div>
+        </div>
+        <p class="footer-brand-desc">A dedicated space for women navigating post‑menopause with strength, confidence, and expert support. Donaghmede, Dublin 13 (D13TX67).</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/kelleythewellnesshub/?hl=en" class="social-icon" aria-label="Instagram" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm10 2H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm-5 4a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.25-2.25a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/></svg></a>
+</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Classes</div>
+        <ul class="footer-links">
+          <li><a href="classes.html#weights">Strength</a></li>
+          <li><a href="classes.html#pilates">Pilates</a></li>
+          <li><a href="classes.html#nutrition">Nutrition 1:1</a></li>
+          <li><a href="timetable.html">Timetable</a></li>
+          <li><a href="classes.html">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Learn</div>
+        <ul class="footer-links">
+          <li><a href="howto.html">How‑to guides</a></li>
+          <li><a href="why.html">Our approach</a></li>
+          <li><a href="team.html">Meet the team</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Connect</div>
+        <ul class="footer-links">
+          <li><a href="mailto:kelley@thewellnesshub.ie">kelley@thewellnesshub.ie</a></li>
+          <li><a href="tel:+353862106867">086 210 6867</a></li>
+          <li><a href="contact.html">Donaghmede, Dublin 13 (D13TX67)</a></li>
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a href="terms.html">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 The Wellness Hub Dublin. All rights reserved.</span>
+      <span>Designed as a local demo site.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Booking Modal -->
+<div class="modal-overlay" id="bookingOverlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Class Name</div>
+        <div class="modal-sub">Date & Time</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="bookingForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input class="form-input" type="text" name="firstName" autocomplete="given-name" placeholder="Mary" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input class="form-input" type="text" name="lastName" autocomplete="family-name" placeholder="Murphy" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" name="email" autocomplete="email" placeholder="mary@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone (Optional)</label>
+          <input class="form-input" type="tel" placeholder="+353 87 123 4567">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Membership</label>
+          <select class="form-select" name="membership">
+            <option>Membership (€80/mo — 2 classes/week)</option>
+            <option>Pilates course (4 weeks)</option>
+            <option>Drop-in (€12)</option>
+            <option>Hyrox block (seasonal)</option>
+            <option>Free Intro Class</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Health Notes</label>
+          <textarea class="form-textarea" rows="2" placeholder="Any injuries, joint issues, or recent surgery we should know about..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-dark" style="width:100%;justify-content:center;margin-top:0.5rem">Confirm Booking</button>
+        <p style="font-size:0.7rem;color:var(--text-faint);text-align:center;margin-top:1rem;letter-spacing:0.04em">Confirmation sent to your inbox. Cancel anytime up to 12 hours before.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Back to Top -->
+<button class="btt" title="Back to top">↑</button>
+
+<script>
+  // Calm controls (index page)
+  (function () {
+    function setPressed(btn, on) { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+
+    var calmToggle = document.getElementById('calmToggle');
+    var calmState = document.getElementById('calmState');
+    var motionToggle = document.getElementById('motionToggle');
+    var motionState = document.getElementById('motionState');
+
+    function applyFromStorage() {
+      try {
+        var calmOn = localStorage.getItem('wh_calm_mode');
+        calmOn = calmOn === null ? '1' : calmOn;
+        document.documentElement.classList.toggle('calm-mode', calmOn === '1');
+        if (calmState) calmState.textContent = calmOn === '1' ? 'On' : 'Off';
+        if (calmToggle) setPressed(calmToggle, calmOn === '1');
+
+        var reduce = localStorage.getItem('wh_reduce_motion') || '0';
+        document.documentElement.classList.toggle('reduce-motion', reduce === '1');
+        if (motionState) motionState.textContent = reduce === '1' ? 'On' : 'Off';
+        if (motionToggle) setPressed(motionToggle, reduce === '1');
+      } catch (e) {}
+    }
+
+    applyFromStorage();
+
+    calmToggle && calmToggle.addEventListener('click', function () {
+      try {
+        var on = document.documentElement.classList.contains('calm-mode');
+        localStorage.setItem('wh_calm_mode', on ? '0' : '1');
+      } catch (e) {}
+      applyFromStorage();
+    });
+
+    motionToggle && motionToggle.addEventListener('click', function () {
+      try {
+        var on = document.documentElement.classList.contains('reduce-motion');
+        localStorage.setItem('wh_reduce_motion', on ? '0' : '1');
+      } catch (e) {}
+      applyFromStorage();
+    });
+  })();
+</script>
+
+<script src="./js/config.js"></script>
+<script src="./js/main.js"></script>
+</body>
+</html>

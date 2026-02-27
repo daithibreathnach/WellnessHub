@@ -1,0 +1,461 @@
+/* ================================================================
+   THE WELLNESS HUB — Premium JS
+   ================================================================ */
+
+
+// ── CONFIG HOOKUP ─────────────────────────────────────────────
+const WH_CONFIG = window.WH_CONFIG || {};
+const WH_BOOKING_URL = WH_CONFIG.bookingUrl || 'timetable.html';
+
+// Update any anchors tagged with data-booking-url (safe defaults already exist)
+document.querySelectorAll('a[data-booking-url]').forEach(a => {
+  a.href = WH_BOOKING_URL;
+});
+
+// Update any elements tagged with data-contact-* (optional)
+document.querySelectorAll('[data-contact-email]').forEach(el => el.textContent = WH_CONFIG.email || el.textContent);
+document.querySelectorAll('a[data-contact-email]').forEach(a => a.href = 'mailto:' + (WH_CONFIG.email || ''));
+document.querySelectorAll('[data-contact-phone]').forEach(el => el.textContent = WH_CONFIG.phoneDisplay || el.textContent);
+document.querySelectorAll('a[data-contact-phone]').forEach(a => a.href = 'tel:' + (WH_CONFIG.phoneTel || '').replace(/\s+/g,''));
+
+// ── EXTERNAL BOOKING BUTTONS (LegitFit) ───────────────────────
+function openExternalBooking() {
+  if (!WH_BOOKING_URL) return;
+  window.open(WH_BOOKING_URL, '_blank', 'noopener');
+  if (window.showToast) window.showToast('Opening booking in LegitFit…');
+}
+
+// ── PAGE LOADER ──────────────────────────────────────────────
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelector('.page-loader')?.classList.add('hidden');
+  }, 900);
+});
+
+// ── CUSTOM CURSOR ────────────────────────────────────────────
+const dot = document.querySelector('.cursor-dot');
+const ring = document.querySelector('.cursor-ring');
+
+if (dot && ring && window.matchMedia('(hover: hover)').matches) {
+  let mouseX = 0, mouseY = 0;
+  let ringX = 0, ringY = 0;
+  let raf;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dot.style.left = mouseX + 'px';
+    dot.style.top = mouseY + 'px';
+  });
+
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    ring.style.left = ringX + 'px';
+    ring.style.top = ringY + 'px';
+    raf = requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Hover states
+  document.querySelectorAll('a, button, .service-card, .team-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '60px';
+      ring.style.height = '60px';
+      ring.style.borderColor = 'var(--gold)';
+      dot.style.opacity = '0';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+      ring.style.borderColor = 'var(--gold)';
+      dot.style.opacity = '1';
+    });
+  });
+}
+
+// ── PROGRESS BAR ─────────────────────────────────────────────
+const progressBar = document.querySelector('.progress-bar');
+window.addEventListener('scroll', () => {
+  const scrollTop = document.documentElement.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+  if (progressBar) progressBar.style.width = (scrollTop / scrollHeight * 100) + '%';
+}, { passive: true });
+
+// ── NAV SCROLL BEHAVIOR ──────────────────────────────────────
+const nav = document.querySelector('nav');
+const isHeroPage = !!document.querySelector('.hero');
+
+window.addEventListener('scroll', () => {
+  if (!nav) return;
+  if (window.scrollY > 60) {
+    nav.classList.add('scrolled');
+    nav.classList.remove('hero-nav');
+  } else {
+    nav.classList.remove('scrolled');
+    if (isHeroPage) nav.classList.add('hero-nav');
+  }
+}, { passive: true });
+
+if (isHeroPage && nav) {
+  nav.classList.add('hero-nav');
+}
+
+// ── SCROLL REVEAL ─────────────────────────────────────────────
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+revealEls.forEach(el => revealObserver.observe(el));
+
+// ── COUNTER ANIMATION ────────────────────────────────────────
+function animateCounter(el) {
+  const target = parseFloat(el.dataset.count);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1800;
+  const start = performance.now();
+
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3); // ease out cubic
+    const current = target * eased;
+    el.textContent = (Number.isInteger(target) ? Math.floor(current) : current.toFixed(1)) + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounter(entry.target);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+
+// ── TABS ─────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const group = btn.closest('[data-tab-group]') || btn.parentElement;
+    const target = btn.dataset.tab;
+
+    group.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const paneContainer = document.querySelector('.tab-panes') || document;
+    paneContainer.querySelectorAll('.tab-pane').forEach(pane => {
+      pane.classList.remove('active');
+    });
+
+    const targetPane = document.getElementById(target);
+    if (targetPane) targetPane.classList.add('active');
+  });
+});
+
+// ── TIMETABLE FILTERS ────────────────────────────────────────
+document.querySelectorAll('.filter-pill').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.event-row').forEach(row => {
+      row.style.display = (filter === 'all' || row.dataset.type === filter) ? 'grid' : 'none';
+    });
+  });
+});
+
+// ── BOOKING MODAL + LOCAL BOOKINGS ──────────────────────────
+const STORAGE_KEY = 'wellnesshub_bookings_v1';
+
+function loadBookings() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function saveBookings(list) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+function makeBookingId(day, time, name) {
+  const str = `${day}|${time}|${name}`.toLowerCase().replace(/\s+/g,' ').trim();
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return 'wh_' + (h >>> 0).toString(16);
+}
+
+let currentEvent = null;
+
+// ── BOOKING MODAL ────────────────────────────────────────────
+function openBookingModal(name, time, day, type) {
+  const overlay = document.getElementById('bookingOverlay');
+  if (!overlay) return;
+  currentEvent = {
+    name,
+    day,
+    time,
+    type: type || 'class'
+  };
+
+  overlay.querySelector('.modal-title').textContent = name;
+  overlay.querySelector('.modal-sub').textContent = `${day} · ${time}`;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('open'));
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+});
+
+document.querySelectorAll('.btn-sm:not(:disabled)').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    if (btn.dataset.booking === 'external') {
+      e.preventDefault();
+      openExternalBooking();
+      return;
+    }
+    const row = btn.closest('.event-row');
+    if (!row) return;
+    const name = row.querySelector('.event-name')?.textContent || 'Class';
+    const hour = row.querySelector('.event-hour')?.textContent?.trim() || '';
+    const period = row.querySelector('.event-period')?.textContent?.trim() || '';
+    const time = `${hour} ${period}`.trim();
+    const day = row.closest('.day-group')?.querySelector('.day-label')?.textContent?.trim().split('\n')[0] || 'This week';
+    openBookingModal(name, time, day, row.dataset.type);
+  });
+});
+
+document.getElementById('bookingForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+  const first = form.querySelector('[name="firstName"]')?.value?.trim() || '';
+  const last  = form.querySelector('[name="lastName"]')?.value?.trim() || '';
+  const email = form.querySelector('[name="email"]')?.value?.trim() || '';
+  const phone = form.querySelector('[name="phone"]')?.value?.trim() || '';
+  const membership = form.querySelector('[name="membership"]')?.value || '';
+  const notes = form.querySelector('[name="notes"]')?.value?.trim() || '';
+
+  if (!currentEvent) {
+    closeModal();
+    showToast('Booked. (Demo mode)');
+    return;
+  }
+
+  const id = makeBookingId(currentEvent.day, currentEvent.time, currentEvent.name);
+  const list = loadBookings();
+
+  if (list.some(b => b.id === id)) {
+    closeModal();
+    showToast('You already have this class booked.');
+    return;
+  }
+
+  list.unshift({
+    id,
+    createdAt: new Date().toISOString(),
+    attendee: { first, last, email, phone },
+    membership,
+    notes,
+    event: currentEvent
+  });
+
+  saveBookings(list);
+  closeModal();
+  showToast('Booked. Check “My Bookings” for details.');
+  form.reset();
+});
+
+// ── NEWSLETTER ───────────────────────────────────────────────
+document.getElementById('newsletterForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  showToast('Welcome to our Thursday newsletter. See you soon.');
+  e.target.reset();
+});
+
+// ── TOAST ─────────────────────────────────────────────────────
+function showToast(msg) {
+  let container = document.querySelector('.toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  container.appendChild(toast);
+  requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 500);
+  }, 3500);
+}
+
+window.showToast = showToast;
+
+// ── BACK TO TOP ───────────────────────────────────────────────
+const btt = document.querySelector('.btt');
+window.addEventListener('scroll', () => {
+  btt?.classList.toggle('visible', window.scrollY > 500);
+}, { passive: true });
+btt?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+// ── MOBILE NAV ────────────────────────────────────────────────
+const hamburger = document.querySelector('.hamburger');
+const navLinks = document.querySelector('.nav-links');
+const navRoot = document.querySelector('nav');
+
+function setNavOpen(open) {
+  if (!navRoot) return;
+  navRoot.classList.toggle('nav-open', open);
+  hamburger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+hamburger?.addEventListener('click', () => {
+  const open = !navRoot?.classList.contains('nav-open');
+  setNavOpen(open);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') setNavOpen(false);
+});
+
+navLinks?.addEventListener('click', (e) => {
+  const a = e.target.closest('a');
+  if (a) setNavOpen(false);
+});
+
+// Close mobile menu when clicking outside the nav (mobile only)
+document.addEventListener('click', (e) => {
+  if (!navRoot?.classList.contains('nav-open')) return;
+  const inside = e.target.closest('nav');
+  if (!inside) setNavOpen(false);
+}, { capture: true });
+
+// ── BOOKINGS PAGE ─────────────────────────────────────────────
+function renderBookingsPage() {
+  const root = document.getElementById('bookingsList');
+  if (!root) return;
+
+  const list = loadBookings();
+  if (!list.length) {
+    root.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-title">No bookings yet</div>
+        <div class="empty-sub">Book a class from the timetable. Your bookings will appear here on this device.</div>
+        <a class="btn btn-gold btn-arrow" href="timetable.html">View timetable</a>
+      </div>
+    `;
+    return;
+  }
+
+  root.innerHTML = list.map(b => `
+    <div class="booking-card" data-id="${b.id}">
+      <div class="booking-main">
+        <div class="booking-name">${b.event.name}</div>
+        <div class="booking-meta">${b.event.day} · ${b.event.time} · ${prettyType(b.event.type)}</div>
+        <div class="booking-meta">Booked for ${escapeHtml((b.attendee.first + ' ' + b.attendee.last).trim() || 'Member')}</div>
+      </div>
+      <div class="booking-actions">
+        <button class="btn-sm btn-sm-light" data-ics>Calendar (.ics)</button>
+        <button class="btn-sm btn-sm-danger" data-cancel>Cancel</button>
+      </div>
+    </div>
+  `).join('');
+
+  if (!root.dataset.bound) {
+    root.addEventListener('click', (e) => {
+      const card = e.target.closest('.booking-card');
+      if (!card) return;
+      const id = card.dataset.id;
+
+      if (e.target.matches('[data-cancel]')) {
+        const next = loadBookings().filter(b => b.id !== id);
+        saveBookings(next);
+        showToast('Booking cancelled.');
+        renderBookingsPage();
+      }
+
+      if (e.target.matches('[data-ics]')) {
+        const booking = loadBookings().find(b => b.id === id);
+        if (booking) downloadIcs(booking);
+      }
+    });
+    root.dataset.bound = '1';
+  }
+}
+
+function prettyType(t) {
+  if (!t) return 'Class';
+  const map = { weights: 'Weights', pilates: 'Pilates', nutrition: 'Nutrition' };
+  return map[t] || (t.charAt(0).toUpperCase() + t.slice(1));
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+function downloadIcs(booking) {
+  const title = booking.event.name;
+  // We only have day text, so this is a placeholder date.
+  const dt = new Date();
+  const start = dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const end = new Date(dt.getTime() + 45*60000).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//WellnessHub//Local Demo//EN',
+    'BEGIN:VEVENT',
+    `UID:${booking.id}@wellnesshub.local`,
+    `DTSTAMP:${start}`,
+    `DTSTART:${start}`,
+    `DTEND:${end}`,
+    `SUMMARY:${title}`,
+    'LOCATION:Donaghmede, Dublin',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob = new Blob([ics], { type: 'text/calendar' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${title.replace(/\s+/g,'-').toLowerCase()}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+renderBookingsPage();
+
+// ── SMOOTH ANCHOR SCROLLING ───────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', (e) => {
+    const target = document.querySelector(anchor.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});

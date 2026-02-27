@@ -1,0 +1,45 @@
+# The Wellness Hub (Dublin) — Static Site
+
+This repo contains the full static website + maintainer docs for **The Wellness Hub** in Donaghmede, Dublin.
+
+## Folder structure
+
+- `wellnesshub_pro/` — the website (open `index.html` to start)
+- `docs/` — handoff guide and maintenance notes
+- `scripts/` — quality checks (links/anchors)
+
+## Quick run (local)
+
+Option A (double‑click):
+- Open `wellnesshub_pro/index.html`
+
+Option B (recommended, behaves like production):
+```bash
+cd wellnesshub_pro
+python -m http.server 8000
+```
+
+Then open:
+- http://localhost:8000
+
+## Edit workflow (safe)
+
+1. Make edits in `wellnesshub_pro/` (HTML/CSS/JS).
+2. Run link check:
+```bash
+python scripts/check_links.py wellnesshub_pro
+```
+3. Click through: Home → Timetable → Classes → Team → Contact.
+4. Commit and push.
+
+## Deploy (static hosting)
+
+Upload the contents of `wellnesshub_pro/` to the web root of your host.
+
+Ireland regions:
+- AWS S3/CloudFront in **eu-west-1**
+- Azure Static Web Apps / Storage in **North Europe**
+
+## Notes
+
+- Booking/payment links out to LegitFit. Replace the booking URL(s) once the final LegitFit destination URL is known.
