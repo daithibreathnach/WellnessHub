@@ -1,0 +1,13 @@
+{
+  "name": "Battery Doctor",
+  "short_name": "Battery",
+  "description": "Battery diagnosis and drain tracker. Runs entirely on your phone.",
+  "start_url": "battery.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0f14",
+  "theme_color": "#0b0f14",
+  "icons": [
+    { "src": "battery-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

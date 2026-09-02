@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f14">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="battery.webmanifest">
+<link rel="icon" href="battery-icon.svg" type="image/svg+xml">
+<title>Battery Doctor</title>
+<meta name="description" content="Battery diagnosis and drain tracker. Runs entirely on your phone, no data leaves the device.">
+<style>
+  :root{
+    --bg:#0b0f14; --card:#141a22; --card2:#1b232d; --line:#26303b;
+    --text:#e8edf2; --muted:#8a97a6; --good:#3ddc84; --warn:#ffb340; --bad:#ff5c5c; --accent:#5aa9ff;
+    --r:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+  body{padding:max(12px,env(safe-area-inset-top)) 14px max(24px,env(safe-area-inset-bottom))}
+  header{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 14px}
+  header h1{font-size:20px;margin:0;font-weight:600;letter-spacing:.2px}
+  header .sub{color:var(--muted);font-size:13px}
+  .pill{font-size:12px;padding:5px 10px;border-radius:999px;background:var(--card2);color:var(--muted);border:1px solid var(--line)}
+  .pill.live{color:var(--good);border-color:rgba(61,220,132,.35)}
+  .pill.off{color:var(--warn);border-color:rgba(255,179,64,.35)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:0 0 12px;font-weight:600}
+  .hero{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}
+  .gauge{position:relative;width:150px;height:150px}
+  .gauge svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .gauge .track{stroke:var(--line);fill:none;stroke-width:12}
+  .gauge .fill{stroke:var(--good);fill:none;stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset .6s ease,stroke .4s}
+  .gauge .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .num b{font-size:38px;font-weight:600;line-height:1}
+  .gauge .num span{font-size:12px;color:var(--muted);margin-top:4px}
+  .stats{display:grid;gap:8px}
+  .stat{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-bottom:1px dashed var(--line);padding-bottom:6px}
+  .stat:last-child{border-bottom:0}
+  .stat .k{color:var(--muted);font-size:13px}
+  .stat .v{font-weight:600;font-size:15px;text-align:right}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .tile{background:var(--card2);border-radius:14px;padding:12px 10px;text-align:center}
+  .tile b{display:block;font-size:20px;font-weight:600}
+  .tile small{display:block;color:var(--muted);font-size:11px;margin-top:3px;line-height:1.3}
+  .verdict{display:flex;gap:12px;align-items:flex-start}
+  .dot{width:14px;height:14px;border-radius:50%;flex:none;margin-top:4px;background:var(--muted);box-shadow:0 0 0 4px rgba(255,255,255,.04)}
+  .dot.good{background:var(--good)} .dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)}
+  .verdict h3{margin:0 0 4px;font-size:17px}
+  .verdict p{margin:0;color:var(--muted);font-size:14px}
+  ul.findings{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px}
+  ul.findings li{background:var(--card2);border-radius:12px;padding:10px 12px;font-size:14px;border-left:3px solid var(--muted)}
+  ul.findings li.warn{border-left-color:var(--warn)} ul.findings li.bad{border-left-color:var(--bad)} ul.findings li.good{border-left-color:var(--good)}
+  ul.findings li b{display:block;margin-bottom:2px}
+  ul.findings li span{color:var(--muted);font-size:13px}
+  .chart{width:100%;height:140px;display:block}
+  .chart .axis{stroke:var(--line);stroke-width:1}
+  .chart .line{fill:none;stroke:var(--accent);stroke-width:2;stroke-linejoin:round}
+  .chart .chg{fill:none;stroke:var(--good);stroke-width:2}
+  .chart text{fill:var(--muted);font-size:10px}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:6px}
+  .legend i{display:inline-block;width:10px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+  .steps{padding-left:0;list-style:none;margin:0;display:grid;gap:10px;counter-reset:s}
+  .steps li{display:grid;grid-template-columns:26px 1fr;gap:10px;font-size:14px;align-items:start}
+  .steps li::before{counter-increment:s;content:counter(s);width:26px;height:26px;border-radius:50%;background:var(--card2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+  .steps li b{display:block}
+  .steps li span{color:var(--muted);font-size:13px}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  button{appearance:none;border:1px solid var(--line);background:var(--card2);color:var(--text);padding:10px 14px;border-radius:12px;font:inherit;font-size:14px;cursor:pointer}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#04121f;font-weight:600}
+  button.danger{color:var(--bad)}
+  button:active{transform:scale(.98)}
+  input[type=number]{width:90px;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:10px;border-radius:12px;font:inherit}
+  .note{font-size:13px;color:var(--muted);margin:8px 0 0}
+  .hidden{display:none!important}
+  details summary{cursor:pointer;font-size:14px;color:var(--accent);margin-bottom:8px}
+  .foot{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}
+  @media (max-width:360px){.hero{grid-template-columns:1fr;justify-items:center}.grid3{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Battery Doctor</h1>
+    <div class="sub" id="device">Detecting phone…</div>
+  </div>
+  <span class="pill" id="apiPill">…</span>
+</header>
+
+<section class="card" id="heroCard">
+  <div class="hero">
+    <div class="gauge">
+      <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52"/><circle class="fill" id="ring" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+      <div class="num"><b id="lvl">--</b><span id="state">reading…</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="k">Drain right now</span><span class="v" id="rateNow">--</span></div>
+      <div class="stat"><span class="k">Time to empty</span><span class="v" id="tte">--</span></div>
+      <div class="stat"><span class="k">Time to full</span><span class="v" id="ttf">--</span></div>
+      <div class="stat"><span class="k">Tracking since</span><span class="v" id="since">--</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="card hidden" id="manualCard">
+  <h2>Manual reading</h2>
+  <p class="note" style="margin:0 0 10px">This browser doesn't expose battery level (iPhone Safari hides it). Type the % from the top of your screen a few times a day and the app will still work out your drain rate.</p>
+  <div class="row">
+    <input type="number" id="manualLvl" min="0" max="100" placeholder="%" inputmode="numeric">
+    <label style="display:flex;align-items:center;gap:6px;font-size:14px"><input type="checkbox" id="manualChg"> Charging</label>
+    <button class="primary" id="manualAdd">Log reading</button>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Drain rates</h2>
+  <div class="grid3">
+    <div class="tile"><b id="r1h">--</b><small>%/hr<br>last hour</small></div>
+    <div class="tile"><b id="rScreen">--</b><small>%/hr<br>screen on</small></div>
+    <div class="tile"><b id="rIdle">--</b><small>%/hr<br>idle / background</small></div>
+  </div>
+  <div class="grid3" style="margin-top:8px">
+    <div class="tile"><b id="rDay">--</b><small>% used<br>last 24h</small></div>
+    <div class="tile"><b id="cycles">--</b><small>charge sessions<br>last 7 days</small></div>
+    <div class="tile"><b id="samples">0</b><small>readings<br>stored</small></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Diagnosis</h2>
+  <div class="verdict">
+    <div class="dot" id="vDot"></div>
+    <div><h3 id="vTitle">Collecting data…</h3><p id="vBody">Keep this page open for a few minutes, or come back later. The longer it runs, the sharper the diagnosis.</p></div>
+  </div>
+  <ul class="findings" id="findings"></ul>
+</section>
+
+<section class="card">
+  <h2>Last 24 hours</h2>
+  <svg class="chart" id="chart" viewBox="0 0 320 140" preserveAspectRatio="none"></svg>
+  <div class="legend"><span><i style="background:var(--accent)"></i>discharging</span><span><i style="background:var(--good)"></i>charging</span></div>
+</section>
+
+<section class="card">
+  <h2>What to check on this phone</h2>
+  <ol class="steps" id="steps"></ol>
+</section>
+
+<section class="card">
+  <h2>Data</h2>
+  <div class="row">
+    <button id="installBtn" class="primary hidden">Add to home screen</button>
+    <button id="exportBtn">Export CSV</button>
+    <button id="clearBtn" class="danger">Clear history</button>
+  </div>
+  <p class="note">Everything is stored in this browser only (localStorage). Nothing is uploaded. Keep the tab open, or install it to the home screen and open it a few times a day so it can take readings.</p>
+</section>
+
+<p class="foot">Tip: Android reports the most detail in Chrome. On iPhone use the manual reading card.</p>
+
+<script>
+(function(){
+  'use strict';
+  const KEY='bd_samples_v1';
+  const MAX=4000;
+  const $=id=>document.getElementById(id);
+  const ua=navigator.userAgent;
+  const isAndroid=/Android/i.test(ua);
+  const isIOS=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const isSamsung=/SamsungBrowser|SM-/i.test(ua);
+  let samples=load();
+  let battery=null;
+  let manualMode=false;
+  let deferredInstall=null;
+
+  function load(){try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+  function save(){try{if(samples.length>MAX)samples=samples.slice(-MAX);localStorage.setItem(KEY,JSON.stringify(samples))}catch(e){}}
+
+  // sample = [timestamp, level(0-100), charging(0/1), visible(0/1)]
+  function addSample(level,charging){
+    const now=Date.now();
+    const vis=document.visibilityState==='visible'?1:0;
+    const last=samples[samples.length-1];
+    if(last&&now-last[0]<20000&&last[1]===level&&last[2]===charging&&last[3]===vis)return;
+    samples.push([now,Math.round(level),charging?1:0,vis]);
+    save();
+    render();
+  }
+
+  // ---- device label
+  function deviceLabel(){
+    let m='';
+    const a=ua.match(/Android ([\d.]+); ([^;)]+)/);
+    if(a){m=a[2].replace(/ Build.*$/,'').trim()+' · Android '+a[1];}
+    else if(isIOS){const v=ua.match(/OS (\d+)[_.](\d+)/);m=(/iPad/.test(ua)?'iPad':'iPhone')+(v?' · iOS '+v[1]+'.'+v[2]:'');}
+    else m=navigator.platform||'Unknown device';
+    return m;
+  }
+  $('device').textContent=deviceLabel();
+
+  // ---- battery api
+  function hookBattery(b){
+    battery=b;
+    const push=()=>addSample(b.level*100,b.charging);
+    ['levelchange','chargingchange','chargingtimechange','dischargingtimechange'].forEach(ev=>b.addEventListener(ev,()=>{push();render();}));
+    push();
+    $('apiPill').textContent='Live';$('apiPill').className='pill live';
+    $('manualCard').classList.add('hidden');
+  }
+  if(navigator.getBattery){
+    navigator.getBattery().then(hookBattery).catch(enableManual);
+  }else enableManual();
+
+  function enableManual(){
+    manualMode=true;
+    $('apiPill').textContent='Manual';$('apiPill').className='pill off';
+    $('manualCard').classList.remove('hidden');
+    $('state').textContent='manual';
+  }
+  $('manualAdd').addEventListener('click',()=>{
+    const v=parseFloat($('manualLvl').value);
+    if(isNaN(v)||v<0||v>100){$('manualLvl').focus();return;}
+    addSample(v,$('manualChg').checked);
+    $('manualLvl').value='';
+  });
+
+  // periodic tick so idle periods produce readings even without levelchange
+  setInterval(()=>{if(battery)addSample(battery.level*100,battery.charging);},60000);
+  document.addEventListener('visibilitychange',()=>{if(battery)addSample(battery.level*100,battery.charging);render();});
+
+  // ---- maths
+  const H=3600000;
+  function segments(from,to){
+    // consecutive discharging pairs within window → [dt(ms), dLevel(%), visible]
+    const out=[];
+    for(let i=1;i<samples.length;i++){
+      const a=samples[i-1],b=samples[i];
+      if(b[0]<from||a[0]>to)continue;
+      if(a[2]||b[2])continue;               // skip charging
+      const dt=b[0]-a[0]; if(dt<=0||dt>3*H)continue; // gap too big → phone was off / no data
+      const dl=a[1]-b[1]; if(dl<0)continue;
+      out.push([dt,dl,a[3]&&b[3]]);
+    }
+    return out;
+  }
+  function rate(segs){ // %/hr
+    let t=0,l=0;segs.forEach(s=>{t+=s[0];l+=s[1];});
+    if(t<5*60000)return null; // need 5 min of data
+    return l/(t/H);
+  }
+  function used24h(){
+    const from=Date.now()-24*H;let l=0;segments(from,Date.now()).forEach(s=>l+=s[1]);return l;
+  }
+  function chargeSessions(days){
+    const from=Date.now()-days*24*H;let n=0,prev=null;
+    for(const s of samples){if(s[0]<from)continue;if(s[2]&&prev===0)n++;prev=s[2];}
+    return n;
+  }
+  function fmtRate(r){return r==null?'--':(Math.round(r*10)/10).toFixed(1);}
+  function fmtDur(sec){
+    if(sec==null||!isFinite(sec)||sec<=0)return '--';
+    const h=Math.floor(sec/3600),m=Math.round((sec%3600)/60);
+    return h?h+'h '+String(m).padStart(2,'0')+'m':m+'m';
+  }
+  function ago(ts){
+    const d=Date.now()-ts;
+    if(d<H)return Math.max(1,Math.round(d/60000))+' min ago';
+    if(d<24*H)return Math.round(d/H)+' h ago';
+    return Math.round(d/(24*H))+' d ago';
+  }
+
+  // ---- diagnosis
+  function diagnose(){
+    const now=Date.now();
+    const all=segments(0,now), lastHr=segments(now-H,now);
+    const rAll=rate(all), r1=rate(lastHr);
+    const rScreen=rate(all.filter(s=>s[2])), rIdle=rate(all.filter(s=>!s[2]));
+    const totalHrs=all.reduce((t,s)=>t+s[0],0)/H;
+    const f=[];
+    let level='',title='',body='';
+
+    if(totalHrs<0.25){
+      return {level:'',title:'Collecting data…',body:'Keep this page open for a few minutes, or come back later. The longer it runs, the sharper the diagnosis.',findings:[]};
+    }
+    const worst=Math.max(rIdle||0,rScreen||0,rAll||0);
+    // thresholds: typical phone idle 0.5–2 %/hr, screen-on 8–15 %/hr
+    if(rIdle!=null){
+      if(rIdle>6)f.push(['bad','Heavy background drain: '+fmtRate(rIdle)+'%/hr while idle','Normal is under 2%/hr. Something is running while the screen is off: a rogue app, sync, GPS, or a weak signal hunting for network.']);
+      else if(rIdle>2.5)f.push(['warn','Background drain a bit high: '+fmtRate(rIdle)+'%/hr idle','Usually location services, always-on display, or too many apps allowed to refresh in the background.']);
+      else f.push(['good','Idle drain looks normal ('+fmtRate(rIdle)+'%/hr)','Your phone sleeps properly. The drain is coming from active use.']);
+    }
+    if(rScreen!=null){
+      if(rScreen>25)f.push(['bad','Very high screen-on drain: '+fmtRate(rScreen)+'%/hr','Expect 8–15%/hr for normal use. This level points to max brightness, 120Hz, gaming, video calls, hotspot, or a worn battery that can no longer hold its rated capacity.']);
+      else if(rScreen>15)f.push(['warn','Screen-on drain is on the high side: '+fmtRate(rScreen)+'%/hr','Lower brightness, turn off adaptive refresh rate, and check which app tops the battery usage list.']);
+      else f.push(['good','Screen-on drain is normal ('+fmtRate(rScreen)+'%/hr)','Active use costs what it should.']);
+    }
+    const u=used24h();
+    if(u>=100)f.push(['warn','You used '+Math.round(u)+'% in the last 24h','More than one full charge a day. If usage is light, the cell is probably degraded. Check Battery Health in settings (see steps below).']);
+    if(chargeSessions(7)>14)f.push(['warn','Charging a lot: '+chargeSessions(7)+' sessions in 7 days','Frequent top-ups often mean the battery no longer holds charge. Ask for a battery health report.']);
+    const gaps=samples.filter((s,i)=>i&&s[0]-samples[i-1][0]>3*H).length;
+    if(gaps>0)f.push(['','Some gaps in tracking ('+gaps+')','The app can only measure while it is open. Install it to your home screen and open it morning and night for a better picture.']);
+
+    if(worst>20||(rIdle!=null&&rIdle>6)){level='bad';title='Something is draining your battery';body='This is well outside normal. Start with the steps below, especially the battery usage list.';}
+    else if(worst>12||(rIdle!=null&&rIdle>2.5)){level='warn';title='Drain is higher than it should be';body='Not broken, but a few settings or apps are costing you hours a day.';}
+    else{level='good';title='Battery behaviour looks healthy';body='Drain rates are normal. If it still feels fast, the battery may just be small or worn. Check its health.';}
+    return {level,title,body,findings:f,r1,rScreen,rIdle,rAll};
+  }
+
+  // ---- steps per platform
+  function steps(){
+    const s=[];
+    if(isAndroid){
+      s.push(['Open the usage list','Settings › Battery › Battery usage. Sort by "last 24 hours". Anything above ~10% that you did not actively use is the suspect.']);
+      s.push(['Restrict the suspect','Long‑press the app › App info › Battery › choose Restricted (Samsung: "Put app to sleep"). Uninstall it if you don\'t need it.']);
+      s.push(['Location & scanning','Settings › Location › Location services: turn off Wi‑Fi scanning and Bluetooth scanning. Set weather/social apps to "Only while using".']);
+      s.push(['Screen settings','Brightness to adaptive, Motion smoothness to Standard (not 120Hz), turn off Always‑On Display, screen timeout 30s.']);
+      s.push(['Signal','Weak 5G/4G is a silent killer. In Settings › Connections › Mobile networks try LTE/4G only when 5G is patchy.']);
+      s.push(['Battery health',isSamsung?'Samsung Members app › Diagnostics › Battery status, or dial *#0228# for the real capacity.':'Settings › About phone › Battery information (Android 14+). Below 80% health = time for a new cell.']);
+      s.push(['Nuclear option','Reboot, then if drain persists: Settings › Battery › Background usage limits › Deep sleeping apps, or a cache wipe from recovery.']);
+    }else if(isIOS){
+      s.push(['Open the usage list','Settings › Battery. Tap "Last 10 Days". Look at "Activity" vs "Background Activity" per app.']);
+      s.push(['Background App Refresh','Settings › General › Background App Refresh › turn off for anything that isn\'t messaging.']);
+      s.push(['Location','Settings › Privacy & Security › Location Services. Set most apps to "While Using" and turn off "Precise" where unneeded.']);
+      s.push(['Screen','Settings › Display: Auto‑Brightness on, Always On Display off (Pro models), Auto‑Lock 30s.']);
+      s.push(['Battery Health','Settings › Battery › Battery Health & Charging. Under 80% Maximum Capacity means Apple will replace it.']);
+      s.push(['Signal & Wi‑Fi','Weak reception drains fast. Turn on Wi‑Fi Calling and consider Settings › Cellular › Voice & Data › LTE if 5G is spotty.']);
+      s.push(['Reset if stuck','Restart, then check for iOS updates. A backlog of Photos/iCloud sync after an update can drain for 1–2 days.']);
+    }else{
+      s.push(['Open this on your phone','Diagnosis steps are phone‑specific. Open this page in Chrome on Android or Safari on iPhone.']);
+    }
+    $('steps').innerHTML=s.map(x=>'<li><div><b>'+x[0]+'</b><span>'+x[1]+'</span></div></li>').join('');
+  }
+  steps();
+
+  // ---- chart
+  function drawChart(){
+    const svg=$('chart');const W=320,Hh=140,pad={l:26,r:6,t:8,b:18};
+    const now=Date.now(),from=now-24*H;
+    const pts=samples.filter(s=>s[0]>=from);
+    let out='';
+    // axes
+    [0,50,100].forEach(v=>{const y=pad.t+(1-v/100)*(Hh-pad.t-pad.b);out+='<line class="axis" x1="'+pad.l+'" x2="'+(W-pad.r)+'" y1="'+y+'" y2="'+y+'"/><text x="2" y="'+(y+3)+'">'+v+'</text>';});
+    for(let h=0;h<=24;h+=6){const x=pad.l+(h/24)*(W-pad.l-pad.r);out+='<text x="'+(x-8)+'" y="'+(Hh-4)+'">-'+(24-h)+'h</text>';}
+    const X=t=>pad.l+((t-from)/(24*H))*(W-pad.l-pad.r), Y=l=>pad.t+(1-l/100)*(Hh-pad.t-pad.b);
+    let seg='',cls='';
+    for(let i=0;i<pts.length;i++){
+      const p=pts[i],c=p[2]?'chg':'line';
+      const gap=i&&p[0]-pts[i-1][0]>3*H;
+      if(c!==cls||gap){if(seg)out+='<polyline class="'+cls+'" points="'+seg+'"/>';seg='';cls=c;if(i&&!gap)seg+=X(pts[i-1][0])+','+Y(pts[i-1][1])+' ';}
+      seg+=X(p[0])+','+Y(p[1])+' ';
+    }
+    if(seg)out+='<polyline class="'+cls+'" points="'+seg+'"/>';
+    if(!pts.length)out+='<text x="'+(W/2-40)+'" y="'+(Hh/2)+'">no readings yet</text>';
+    svg.innerHTML=out;
+  }
+
+  // ---- render
+  function render(){
+    const last=samples[samples.length-1];
+    const lvl=battery?Math.round(battery.level*100):(last?last[1]:null);
+    const chg=battery?battery.charging:(last?!!last[2]:false);
+    if(lvl!=null){
+      $('lvl').textContent=lvl+'%';
+      const ring=$('ring');ring.style.strokeDashoffset=(326.7*(1-lvl/100)).toFixed(1);
+      ring.style.stroke=chg?'var(--good)':lvl<=20?'var(--bad)':lvl<=40?'var(--warn)':'var(--accent)';
+      $('state').textContent=chg?'charging':'on battery';
+    }
+    const d=diagnose();
+    $('rateNow').textContent=d.r1!=null?fmtRate(d.r1)+' %/hr':(chg?'charging':'--');
+    if(battery&&!manualMode){
+      $('tte').textContent=chg?'--':(isFinite(battery.dischargingTime)?fmtDur(battery.dischargingTime):(d.r1?fmtDur(lvl/d.r1*3600):'--'));
+      $('ttf').textContent=chg?(isFinite(battery.chargingTime)?fmtDur(battery.chargingTime):'…'):'--';
+    }else{
+      $('tte').textContent=(!chg&&d.r1&&lvl!=null)?fmtDur(lvl/d.r1*3600):'--';
+      $('ttf').textContent='--';
+    }
+    $('since').textContent=samples.length?ago(samples[0][0]):'--';
+    $('r1h').textContent=fmtRate(d.r1);$('rScreen').textContent=fmtRate(d.rScreen);$('rIdle').textContent=fmtRate(d.rIdle);
+    $('rDay').textContent=Math.round(used24h());$('cycles').textContent=chargeSessions(7);$('samples').textContent=samples.length;
+    $('vDot').className='dot '+d.level;$('vTitle').textContent=d.title;$('vBody').textContent=d.body;
+    $('findings').innerHTML=d.findings.map(x=>'<li class="'+x[0]+'"><b>'+x[1]+'</b><span>'+x[2]+'</span></li>').join('');
+    drawChart();
+  }
+  render();
+
+  // ---- data buttons
+  $('exportBtn').addEventListener('click',()=>{
+    const csv='time,level,charging,screen_on\n'+samples.map(s=>new Date(s[0]).toISOString()+','+s[1]+','+s[2]+','+s[3]).join('\n');
+    const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='battery-log.csv';document.body.appendChild(a);a.click();a.remove();
+  });
+  $('clearBtn').addEventListener('click',()=>{if(confirm('Delete all stored readings?')){samples=[];save();render();}});
+
+  // ---- install
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;$('installBtn').classList.remove('hidden');});
+  $('installBtn').addEventListener('click',async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$('installBtn').classList.add('hidden');});
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('battery-sw.js').catch(()=>{});}
+})();
+</script>
+</body>
+</html>
